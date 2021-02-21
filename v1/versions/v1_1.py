@@ -108,18 +108,8 @@ def median(df_ts):
     Median_Series=clusters(condensed_median_matrix,df_ts)
     return Median_Series
 
-def vertical(df_ts):
-    vertical_distances=[]
-    for i in range(len(df_ts)):
-        time_series_i=sum(list(df_ts.iloc[i]))/(len(list(df_ts.iloc[i])))
-        for j in range(i+1,len(df_ts)):
-            time_series_j=sum(list(df_ts.iloc[j]))/(len(list(df_ts.iloc[j])))
-            vertical_distances.append(abs(time_series_i-time_series_j))
-    condensed_vertical_matrix=np.array(vertical_distances)
-    Vertical_Series=clusters(condensed_vertical_matrix,df_ts)
-    return Vertical_Series
 
-##Changed to use the trapezoidal rule to give a better estimate of the mean value of the time series. Vertical returns the difference of the mean values of the two time series
+##1.1 Changed to use the trapezoidal rule to give a better estimate of the mean value of the time series. Vertical returns the difference of the mean values of the two time series
 
 def vertical(df_ts):
     vertical_distances=[]
@@ -127,11 +117,17 @@ def vertical(df_ts):
         time_series_i=np.array((1/2) * df_ts.iloc[i][0])
         time_series_i=np.append(time_series_i,df_ts.iloc[i][1:len(df_ts.iloc[i])-1])
         time_series_i=np.append(time_series_i,((1/2) * df_ts.iloc[i][len(df_ts.iloc[i])-1]))
+        time_series_i=time_series_i/len(time_series_i)
         for j in range(i+1, len(df_ts)):
             time_series_j=np.array((1/2) * df_ts.iloc[j][0])
             time_series_j=np.append(time_series_j,df_ts.iloc[j][1:len(df_ts.iloc[j])-1])
             time_series_j=np.append(time_series_j,((1/2) * df_ts.iloc[j][len(df_ts.iloc[j])-1]))
-            vertical_distances.append(abs(time_series_i-time_series_j))
+            time_series_j=time_series_j/len(time_series_j)
+            vertical_distances.append(abs(np.sum(time_series_i)-np.sum(time_series_j)))
+    condensed_vertical_matrix=np.array(vertical_distances)
+    Vertical_Series=clusters(condensed_vertical_matrix,df_ts)
+    return Vertical_Series
+        
             
         
         
